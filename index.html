@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EstimadorCFE – Simulador de consumo eléctrico bimestral</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>⚡ EstimadorCFE</h1>
+    <p>Simulador de consumo eléctrico bimestral y tarifa escalonada</p>
+  </header>
+
+  <main>
+    <section class="card" id="inventory">
+      <h2>1. Inventario de electrodomésticos</h2>
+      <form id="appliance-form" novalidate>
+        <input type="hidden" id="f-id">
+        <label>Nombre <input id="f-name" type="text" placeholder="Ej. Refrigerador" required></label>
+        <label>Potencia (W) <input id="f-watts" type="number" min="1" step="any" required></label>
+        <label>Cantidad <input id="f-qty" type="number" min="1" step="1" value="1" required></label>
+        <label>Horas/día (0–24) <input id="f-hours" type="number" min="0" max="24" step="any" required></label>
+        <label>Días/bimestre (1–60) <input id="f-days" type="number" min="1" max="60" step="1" value="60" required></label>
+        <div class="form-actions">
+          <button type="submit" id="f-submit" class="primary">Agregar</button>
+          <button type="button" id="f-cancel" hidden>Cancelar edición</button>
+        </div>
+      </form>
+      <p id="form-error" class="error" role="alert"></p>
+
+      <div class="table-wrap">
+        <table id="appliance-table">
+          <thead>
+            <tr><th>Activo</th><th>Nombre</th><th>W</th><th>Cant.</th><th>h/día</th><th>Días</th><th>kWh/bim.</th><th>Acciones</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="toolbar">
+        <button id="btn-demo">Cargar Hogar Demo</button>
+        <button id="btn-export">Exportar reporte JSON</button>
+        <button id="btn-clear" class="danger">Vaciar inventario</button>
+      </div>
+    </section>
+
+    <section class="card" id="tariffs">
+      <h2>2. Tarifas configurables</h2>
+      <form id="tariff-form" novalidate>
+        <label>Límite Básico (kWh) <input id="t-basicLimit" type="number" min="0" step="any"></label>
+        <label>Límite Intermedio (kWh) <input id="t-interLimit" type="number" min="0" step="any"></label>
+        <label>Tarifa Básico ($/kWh) <input id="t-basicRate" type="number" min="0" step="0.01"></label>
+        <label>Tarifa Intermedio ($/kWh) <input id="t-interRate" type="number" min="0" step="0.01"></label>
+        <label>Tarifa Excedente ($/kWh) <input id="t-excessRate" type="number" min="0" step="0.01"></label>
+        <label>Cargo fijo ($) <input id="t-fixedCharge" type="number" min="0" step="0.01"></label>
+        <label>IVA (%) <input id="t-iva" type="number" min="0" max="100" step="0.01"></label>
+        <div class="form-actions">
+          <button type="submit" class="primary">Aplicar tarifas</button>
+          <button type="button" id="t-reset">Restablecer valores</button>
+        </div>
+      </form>
+      <p id="tariff-error" class="error" role="alert"></p>
+    </section>
+
+    <section class="card" id="billing">
+      <h2>3. Desglose del recibo bimestral</h2>
+      <p class="big">Consumo total activo: <strong id="total-kwh">0.00 kWh</strong></p>
+      <table id="breakdown-table">
+        <thead><tr><th>Concepto</th><th>Rango</th><th>kWh</th><th>Tarifa</th><th>Importe</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card" id="simulator">
+      <h2>4. ¿Qué pasa si cambio un aparato?</h2>
+      <div class="sim-controls">
+        <label>Equipo actual <select id="sim-select"></select></label>
+        <label>Watts del equipo nuevo (por unidad) <input id="sim-watts" type="number" min="0" step="any"></label>
+      </div>
+      <div id="sim-result" class="sim-result">Agrega aparatos activos para simular.</div>
+    </section>
+
+    <section class="card" id="chart-section">
+      <h2>5. Consumo por aparato (aparatos activos)</h2>
+      <canvas id="chart" aria-label="Gráfico de barras de consumo por aparato"></canvas>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
